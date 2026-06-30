@@ -1,0 +1,16 @@
+[
+  {
+    "tool_name": "execute_shell_command",
+    "arguments": {
+      "command": "cd ${args.skill_dir}/scripts && python hgr_discover.py --output-dir ${args.work_dir}",
+      "timeout": 60
+    }
+  },
+  {
+    "tool_name": "execute_shell_command",
+    "arguments": {
+      "command": "cd ${args.skill_dir}/scripts && python hgr_main.py --items-json ${args.work_dir}/items.json --cookies-json ${args.work_dir}/cookies.json --config ${args.skill_dir}/config.ini",
+      "timeout": 300
+    }
+  }
+]

@@ -1,0 +1,14 @@
+# 数据目录（原始PDF/DOCX + 生成的Excel）
+data/
+
+# 日志
+hgr.log
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 系统文件
+Thumbs.db
+.DS_Store
