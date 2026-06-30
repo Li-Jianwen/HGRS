@@ -7,10 +7,10 @@
 用法：
     python hgr_most_scraper.py
 
-配置：hgr_most_scraper.py 顶部的 DATA_DIR 需指向 HGR 数据目录
+配置：从 ../config.ini 读取 data_dir（与 hgr_main.py 共用同一配置）
 """
 
-import sys, io, os, re, time, logging, shutil
+import sys, io, os, re, time, logging, shutil, configparser
 from datetime import datetime
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -28,10 +28,19 @@ except ImportError as e:
 # 复用 excel_writer 的格式定义
 sys.path.insert(0, os.path.dirname(__file__))
 from excel_writer import CATEGORY_SHEETS, COL_WIDTHS
-BASE_URL = 'https://fuwu.most.gov.cn'
-DATA_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'hgr', 'data'))
-SUMMARY_PATH = os.path.join(DATA_DIR, '汇总_中国人类遗传资源行政许可事项.xlsx')
+
+# 从 config.ini 读取输出目录配置
+_config = configparser.ConfigParser()
+_config.read(os.path.join(os.path.dirname(__file__), '..', 'config.ini'), encoding='utf-8')
+_data_dir_rel = _config.get('DEFAULT', 'data_dir', fallback='./data')
+_summary_filename = _config.get('DEFAULT', 'summary_filename', fallback='汇总_中国人类遗传资源行政许可事项.xlsx')
+_config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.abspath(os.path.join(_config_dir, _data_dir_rel))
+SUMMARY_PATH = os.path.join(DATA_DIR, _summary_filename)
 BATCHES_DIR = os.path.join(DATA_DIR, 'batches')
+os.makedirs(DATA_DIR, exist_ok=True)
+
+BASE_URL = 'https://fuwu.most.gov.cn'
 
 MAX_PAGES = 25
 REQUEST_DELAY = 0.5
