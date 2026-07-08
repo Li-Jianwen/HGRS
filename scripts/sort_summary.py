@@ -6,8 +6,6 @@ import io
 import os
 import configparser
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 _config = configparser.ConfigParser()
 _config.read(os.path.join(os.path.dirname(__file__), '..', 'config.ini'), encoding='utf-8')
 _data_dir_rel = _config.get('DEFAULT', 'data_dir', fallback='./data')

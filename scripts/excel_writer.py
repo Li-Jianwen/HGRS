@@ -16,8 +16,6 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 # 表头定义（按方案C顺序）
 CATEGORY_SHEETS = [
     ('采集审批', ['序号', '批次', '审批号', '项目名称', '申请单位', '批准时间']),
@@ -269,6 +267,7 @@ class HGRWriter:
 
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     # 测试：读取一个已处理的批次数据，写入Excel
     import argparse
     import json

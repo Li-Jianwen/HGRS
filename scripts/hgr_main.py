@@ -14,8 +14,6 @@ import configparser
 from typing import List, Dict, Tuple, Optional, Any
 from pathlib import Path
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 from hgr_processor import HGRProcessor
 from excel_writer import HGRWriter
 
@@ -368,4 +366,5 @@ def main():
 
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.exit(main())

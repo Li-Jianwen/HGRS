@@ -14,7 +14,6 @@ HGR Discover — API 发现脚本
     cookies.json  — 占位文件（后续下载需手动补充 cookie）
 """
 import sys, io, os, json, argparse
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 import requests
 
@@ -108,6 +107,7 @@ def discover(output_dir: str, cookie_str: str = ''):
     print(f"📝 已保存: {cookies_path} (Cookie {'有' if cookies else '空，需手动补充'})")
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     parser = argparse.ArgumentParser()
     parser.add_argument('--output-dir', required=True, help='输出目录')
     parser.add_argument('--cookie', default='', help='Cookie 字符串（可选）')

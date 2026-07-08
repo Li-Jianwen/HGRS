@@ -12,7 +12,6 @@
 
 import sys, io, os, re, time, logging, shutil, configparser
 from datetime import datetime
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 try:
     import requests
@@ -370,4 +369,5 @@ def main():
     log.info("🏁 完成！")
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     main()

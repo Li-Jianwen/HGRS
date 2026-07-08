@@ -17,8 +17,6 @@ from typing import List, Dict, Optional, Tuple
 sys.path.insert(0, os.path.dirname(__file__))
 from excel_writer import classify_by_approval_no
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 class HGRProcessor:
     def __init__(self, config: Dict, logger=None):
         self.config = config
@@ -292,6 +290,7 @@ class HGRProcessor:
 
 
 if __name__ == '__main__':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     # 测试入口
     import argparse
     import json
