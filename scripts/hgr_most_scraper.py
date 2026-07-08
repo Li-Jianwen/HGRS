@@ -166,6 +166,19 @@ def parse_detail_page(html_text, title):
                     '检测/数据单位': cells[6] if len(cells) > 6 else '',
                     '批准时间': cells[7] if len(cells) > 7 else '',
                 })
+        else:
+            log.warning(f"⚠️ 异常列数 ({header_cols}列)，尝试按5列处理: {title[:50]}")
+            for cells in data_rows:
+                approval_no = cells[1] if len(cells) > 1 else ''
+                cat = classify_approval(approval_no)
+                result[cat].append({
+                    '序号': cells[0] if len(cells) > 0 else '',
+                    '批次': title,
+                    '审批号': approval_no,
+                    '项目名称': cells[2] if len(cells) > 2 else '',
+                    '申请单位': cells[3] if len(cells) > 3 else '',
+                    '批准时间': cells[4] if len(cells) > 4 else '',
+                })
     return result
 
 def batch_sort_key(batch_str):

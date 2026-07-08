@@ -106,7 +106,7 @@ class HGRMain:
 
     def load_metadata(self) -> Dict:
         """
-        加载metadata
+        加载metadata（自动去重）
         """
         if not os.path.exists(self.metadata_path):
             self.logger.info("ℹ️ metadata.json 不存在，创建新文件")
@@ -121,7 +121,13 @@ class HGRMain:
         try:
             with open(self.metadata_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            self.logger.info(f"📂 加载metadata: 已处理 {len(data.get('processed_batches', []))} 个批次，最新 {data.get('latest_year')}年第{data.get('latest_batch')}批")
+            # 去重处理，防止历史重复数据导致问题
+            processed = data.get('processed_batches', [])
+            unique_count = len(set(processed))
+            if len(processed) != unique_count:
+                self.logger.warning(f"⚠️ metadata去重: {len(processed)} → {unique_count}")
+                data['processed_batches'] = list(set(processed))
+            self.logger.info(f"📂 加载metadata: 已处理 {unique_count} 个批次，最新 {data.get('latest_year')}年第{data.get('latest_batch')}批")
             return data
         except Exception as e:
             self.logger.error(f"❌ metadata加载失败: {str(e)}")
@@ -304,11 +310,10 @@ class HGRMain:
                 metadata['latest_year'] = item['_year']
                 metadata['latest_batch'] = item['_batch']
                 metadata['latest_title'] = item['title']
+                # 每成功一个批次立即保存，防止崩溃导致重复处理
+                self.save_metadata(metadata)
             else:
                 errors.append(item)
-        
-        # 保存metadata
-        self.save_metadata(metadata)
         
         # 生成简报
         briefing = self.generate_briefing(metadata, processed, errors)
