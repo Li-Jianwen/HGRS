@@ -169,7 +169,7 @@ class HGRMain:
             year = int(match.group(1))
             batch = int(match.group(2))
             return (year, batch)
-        except:
+        except Exception:
             return None
 
     def filter_new_batches(self, items: List[Dict], metadata: Dict) -> List[Dict]:

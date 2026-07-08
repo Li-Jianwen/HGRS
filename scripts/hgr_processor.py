@@ -9,9 +9,13 @@ import os
 import sys
 import io
 import logging
+import re
 import requests
 import pdfplumber
 from typing import List, Dict, Optional, Tuple
+
+sys.path.insert(0, os.path.dirname(__file__))
+from excel_writer import classify_by_approval_no
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -59,28 +63,12 @@ class HGRProcessor:
         # PDFplumber的单元格可能有换行，需要替换成空格
         cleaned = str(cell).replace('\n', ' ').replace('\r', ' ').strip()
         # 合并连续空格
-        while '  ' in cleaned:
-            cleaned = cleaned.replace('  ', ' ')
+        cleaned = re.sub(r'\s+', ' ', cleaned)
         return cleaned
 
     @staticmethod
     def classify_by_approval_no(approval_no: str) -> str:
-        """
-        根据审批号前缀分类: CJ=采集审批, BC=保藏审批, GH=国际合作, CC=出境证明
-        """
-        if 'CJ' in approval_no:
-            return '采集审批'
-        elif 'BC' in approval_no:
-            return '保藏审批'
-        elif 'GH' in approval_no:
-            return '国际科学研究合作审批'
-        elif 'CC' in approval_no:
-            return '材料出境证明'
-        elif re.match(r'\d{4}-', approval_no):
-            return '材料出境证明'
-        else:
-            # 默认归为国际合作（格式是GHXXX）
-            return '国际科学研究合作审批'
+        return classify_by_approval_no(approval_no)
 
     def extract_tables_from_pdf(self, pdf_path: str) -> Dict[str, List[Dict]]:
         """
@@ -211,11 +199,12 @@ class HGRProcessor:
                     
                     # 检测表头行
                     first_cell = cells[0] if cells else ''
-                    if '序号' in first_cell or '序\n号' in first_cell or first_cell.isdigit() == False and row_idx == 0:
+                    if ('序号' in first_cell or '序\n号' in first_cell or 
+                        (row_idx == 0 and not first_cell.isdigit())):
                         data_start = row_idx + 1
                         continue
                     if '出口出境证明' in first_cell:
-                        continue  # 小节标题
+                        continue
 
                     # 处理数据行
                     if row_idx < data_start:

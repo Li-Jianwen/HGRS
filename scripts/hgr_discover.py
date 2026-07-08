@@ -48,10 +48,26 @@ def discover(output_dir: str, cookie_str: str = ''):
     
     raw = r.json()
     # API 返回格式: {"message": "...", "code": "...", "data": [...]}
-    if isinstance(raw, dict) and 'data' in raw:
-        records = raw['data']
+    if isinstance(raw, dict):
+        # 检查 code 字段
+        code = raw.get('code', '')
+        if code and code != 'success' and code != '200':
+            print(f"❌ API 返回错误: code={code}, message={raw.get('message', '')}")
+            print("   如需 Cookie，请登录后从浏览器复制并传入 --cookie")
+            return
+        
+        if 'data' in raw:
+            records = raw['data']
+        else:
+            print(f"❌ API 返回无 data 字段: {json.dumps(raw, ensure_ascii=False)[:200]}")
+            return
     else:
         records = raw
+    
+    if not isinstance(records, list):
+        print(f"❌ API 返回数据格式异常: {type(records).__name__}")
+        return
+    
     print(f"📋 API 返回 {len(records)} 条记录")
     
     items = []

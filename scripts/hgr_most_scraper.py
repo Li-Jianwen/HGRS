@@ -25,9 +25,9 @@ except ImportError as e:
     print("安装: pip install requests lxml openpyxl")
     sys.exit(1)
 
-# 复用 excel_writer 的格式定义
+# 复用 excel_writer 的格式定义和分类函数
 sys.path.insert(0, os.path.dirname(__file__))
-from excel_writer import CATEGORY_SHEETS, COL_WIDTHS
+from excel_writer import CATEGORY_SHEETS, COL_WIDTHS, classify_by_approval_no
 
 # 从 config.ini 读取输出目录配置
 _config = configparser.ConfigParser()
@@ -111,12 +111,7 @@ def parse_list_page(html_text):
             items.append({'title': text, 'url': full_url, 'year': year, 'batch': batch_num})
     return items
 
-def classify_approval(no):
-    if 'CJ' in no: return '采集审批'
-    if 'BC' in no: return '保藏审批'
-    if 'GH' in no: return '国际科学研究合作审批'
-    if 'CC' in no: return '材料出境证明'
-    return '国际科学研究合作审批'
+classify_approval = classify_by_approval_no
 
 def parse_detail_page(html_text, title):
     """提取详情页表格，返回 {类别: [{列名:值}]}"""
@@ -329,6 +324,10 @@ def main():
         if item['url'] not in seen_urls:
             seen_urls.add(item['url'])
             unique_items.append(item)
+    
+    if not unique_items:
+        log.info("\n📋 未找到任何批次")
+        return []
     
     unique_items.sort(key=lambda x: (x['year'], x['batch']))
     log.info(f"\n📋 共 {len(unique_items)} 个批次 ({unique_items[0]['title']} ~ {unique_items[-1]['title']})")

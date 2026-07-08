@@ -9,6 +9,7 @@ import os
 import sys
 import io
 import logging
+import re
 from typing import Dict, List, Optional
 
 from openpyxl import Workbook, load_workbook
@@ -24,6 +25,24 @@ CATEGORY_SHEETS = [
     ('国际科学研究合作审批', ['序号', '批次', '审批号', '项目名称', '医疗机构(组长单位)', '申办方', '合同研究组织', '检测/数据单位', '批准时间']),
     ('材料出境证明', ['序号', '批次', '审批号', '项目名称', '申请单位', '批准时间']),
 ]
+
+def classify_by_approval_no(approval_no: str) -> str:
+    """
+    根据审批号前缀分类: CJ=采集审批, BC=保藏审批, GH=国际合作, CC=出境证明
+    年份前缀格式（如 2026-XXX）也归为材料出境证明
+    """
+    if 'CJ' in approval_no:
+        return '采集审批'
+    elif 'BC' in approval_no:
+        return '保藏审批'
+    elif 'GH' in approval_no:
+        return '国际科学研究合作审批'
+    elif 'CC' in approval_no:
+        return '材料出境证明'
+    elif re.match(r'\d{4}-', approval_no):
+        return '材料出境证明'
+    else:
+        return '国际科学研究合作审批'
 
 # 列宽定义
 COL_WIDTHS = {
