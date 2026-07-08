@@ -15,7 +15,15 @@ _summary_filename = _config.get('DEFAULT', 'summary_filename', fallback='汇总_
 _config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 summary_path = os.path.join(os.path.abspath(os.path.join(_config_dir, _data_dir_rel)), _summary_filename)
 
-wb = openpyxl.load_workbook(summary_path)
+if not os.path.exists(summary_path):
+    print(f"❌ 汇总文件不存在: {summary_path}")
+    sys.exit(1)
+
+try:
+    wb = openpyxl.load_workbook(summary_path)
+except Exception as e:
+    print(f"❌ 读取汇总文件失败: {str(e)}")
+    sys.exit(1)
 
 sheets_config = {
     '采集审批': {'sort_col': 5},

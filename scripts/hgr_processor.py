@@ -74,7 +74,9 @@ class HGRProcessor:
             return '保藏审批'
         elif 'GH' in approval_no:
             return '国际科学研究合作审批'
-        elif 'CC' in approval_no or approval_no.startswith('2026-'):
+        elif 'CC' in approval_no:
+            return '材料出境证明'
+        elif re.match(r'\d{4}-', approval_no):
             return '材料出境证明'
         else:
             # 默认归为国际合作（格式是GHXXX）

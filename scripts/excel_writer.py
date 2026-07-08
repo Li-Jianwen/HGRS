@@ -173,7 +173,7 @@ class HGRWriter:
 
     def insert_new_batch(self, wb: Workbook, batch_data: Dict) -> None:
         """
-        将新批次插入到每个分类Sheet的表头下方（最新批次在最前面）
+        将新批次追加到每个分类Sheet的末尾（保持处理顺序）
         """
         data = batch_data['data']
         batch_year = batch_data['year']
@@ -189,23 +189,17 @@ class HGRWriter:
             if not cat_data:
                 continue
             
-            nrows = ws.max_row
-            if nrows >= 1:
-                # Insert rows after header (row 2 is inserted after header)
-                ws.insert_rows(2, len(cat_data))
-            else:
-                # No existing data, start from row 2
-                pass
+            start_row = ws.max_row + 1
             
             for row_offset, row_dict in enumerate(cat_data):
-                excel_row = 2 + row_offset
+                excel_row = start_row + row_offset
                 for col_idx, header_name in enumerate(headers, 1):
                     value = row_dict.get(header_name, '')
                     cell = ws.cell(row=excel_row, column=col_idx, value=value)
                     is_center = header_name in ['序号', '批准时间', '批次']
                     self._apply_cell_style(cell, is_header=False, row_idx=excel_row, is_center=is_center)
         
-        self.logger.info(f"✅ 新批次 {batch_str} 已插入汇总文件")
+        self.logger.info(f"✅ 新批次 {batch_str} 已追加到汇总文件")
 
     def write_summary(self, wb: Workbook) -> None:
         """

@@ -22,7 +22,7 @@ from excel_writer import HGRWriter
 # 默认配置
 DEFAULT_CONFIG = {
     'base_url': 'https://apply.hgrg.net/login',
-    'data_dir': '../data',
+    'data_dir': './data',
     'summary_filename': '汇总_中国人类遗传资源行政许可事项.xlsx',
     'batch_filename_template': '中国人类遗传资源行政许可事项{year}年第{batch}批审批结果公示.xlsx',
     'download_retry': '3',
