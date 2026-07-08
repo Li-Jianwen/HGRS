@@ -101,7 +101,7 @@ class HGRMain:
         if os.path.isabs(path_str):
             return path_str
         config_dir = os.path.dirname(os.path.abspath(self.config_path))
-        # config.ini 在 skills/hgr/，所以 data 就在 skills/hgr/data
+        # config.ini 在 skills/HGRS/，所以 data 就在 skills/HGRS/data
         return os.path.abspath(os.path.join(config_dir, path_str))
 
     def load_metadata(self) -> Dict:

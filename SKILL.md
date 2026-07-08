@@ -40,8 +40,8 @@ run_tool_batch(
 
 | 参数 | 说明 | 示例值 |
 |------|------|--------|
-| `skill_dir` | 本 skill 的绝对路径 | `C:\Users\Owen\.copaw\workspaces\default\skills\hgr` |
-| `work_dir` | 临时工作目录（items.json / cookies.json 输出位置） | `C:\Users\Owen\.copaw\workspaces\default` |
+| `skill_dir` | 本 skill 的绝对路径（AI 运行时自动获取） | `<运行时动态获取>` |
+| `work_dir` | 临时工作目录（items.json / cookies.json 输出位置） | `<运行时动态获取>` |
 
 **必须传入这两个参数，不要传 `args={}`，否则 `${args.skill_dir}` 和 `${args.work_dir}` 不会展开。**
 
@@ -186,7 +186,7 @@ python hgr_most_scraper.py
 ### 文件结构
 
 ```
-skills/hgr/data/
+skills/HGRS/data/
 ├── metadata.json                                    # 已处理批次记录（HGR API）
 ├── 汇总_中国人类遗传资源行政许可事项.xlsx             # 汇总（4个Sheet），包含HGR API + MOST 全量数据
 └── batches/
